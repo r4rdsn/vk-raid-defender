@@ -3,9 +3,9 @@ vk-raid-defender был разработан с целью измерения р
 
 # инструкция по установке и запуску
 * установи python версии не менее 3.6.0
-* установи модуль [vk_api](https://github.com/python273/vk_api):
-``python -m pip install vk_api```
-* клонируй этот репозиторий:
+* установи модуль [vk_api](https://github.com/python273/vk_api): 
+```python -m pip install vk_api```
+* клонируй этот репозиторий: 
 ```git clone https://github.com/r4rdsn/vk-raid-defender.git```
-* запусти программу при помощи интерпретатора python:
+* запусти программу при помощи интерпретатора python: 
 ```python vk-raid-defender```
