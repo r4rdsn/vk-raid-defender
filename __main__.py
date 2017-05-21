@@ -11,11 +11,10 @@ by alfred richardsn'''
 import sys
 
 try:
-    import vk_api
+    from vk_api import VkApi
 except ImportError:
     sys.exit('для работы vk raid defender необходима библиотека vk_api')
 
-from vk_api import VkApi
 from vk_api.longpoll import VkLongPoll, VkEventType
 
 import re
@@ -56,6 +55,26 @@ def start_screen():
     print(LOGO + '\n\n')
 
 
+def ask_yes_or_no(question, true_answer='y', false_answer='n', default_answer='', default=True):
+    true_answer = true_answer.lower()
+    false_answer = false_answer.lower()
+    default_answer = default_answer.lower()
+
+    output = question.strip() + ' (' + (true_answer.upper() + '/' + false_answer if default else
+                                        true_answer + '/' + false_answer.upper()) + '): '
+
+    answer = None
+    while answer not in (true_answer, false_answer, default_answer):
+        answer = input(output).lower()
+
+    if answer == true_answer:
+        return True
+    if answer == false_answer:
+        return False
+
+    return default
+
+
 class VkSession(VkApi):
     def __init__(self, token, *args, **kwargs):
         super().__init__(*args, token=token, **kwargs)
@@ -68,32 +87,14 @@ class VkSession(VkApi):
         chat_ids = data.get('chat_ids')
         objectives = data.get('objectives')
 
-        if chat_ids is not None and objectives is not None:
-            answer = None
-            while answer not in ('y', 'n', ''):
-                answer = input('использовать ранее сохранённые данные для работы? (Y/n): ').lower()
-
-                if answer in 'y':
-                    request_info = False
-
-                elif answer == 'n':
-                    request_info = True
-
-        else:
-            request_info = True
-
-        if request_info:
+        if chat_ids is None or objectives is None or not ask_yes_or_no('использовать ранее сохранённые данные для работы?'):
             chat_ids = list(map(int, input('введи айди конф, в которых нужно защищать рейдеров, через пробел: ').split()))
             objectives = list(map(int, input('введи айди защищаемых рейдеров: ').split()))
 
-            answer = None
-            while answer not in ('y', 'n', ''):
-                answer = input('сохранить введённые данные для следующих сессий? (Y/n): ').lower()
-
-                if answer in 'y':
-                    data['chat_ids'] = chat_ids
-                    data['objectives'] = objectives
-                    update_data()
+            if ask_yes_or_no('сохранить введённые данные для следующих сессий?'):
+                data['chat_ids'] = chat_ids
+                data['objectives'] = objectives
+                update_data()
 
         self._chat_ids = chat_ids
         self._objectives = objectives
@@ -149,21 +150,7 @@ def main():
 
     token = data.get('token')
 
-    if token is not None:
-        answer = None
-        while answer not in ('y', 'n', ''):
-            answer = input('использовать ранее сохранённые данные для авторизации? (Y/n): ').lower()
-
-            if answer in 'y':
-                do_auth = False
-
-            elif answer == 'n':
-                do_auth = True
-
-    else:
-        do_auth = True
-
-    if do_auth:
+    if token is None or not ask_yes_or_no('использовать ранее сохранённые данные для авторизации?'):
         print('\nhttps://oauth.vk.com/authorize?client_id=6020061&display=page&redirect_uri=https://oauth.vk.com/blank.html&scope=69632&response_type=token\n')
 
         token = None
@@ -173,21 +160,17 @@ def main():
 
         token = token.group(1)
 
-        answer = None
-        while answer not in ('y', 'n', ''):
-            answer = input('сохранить введённые данные для следующих сессий? (Y/n): ').lower()
-
-            if answer in 'y':
-                data['token'] = token
-                update_data()
+        if ask_yes_or_no('сохранить введённые данные для следующих сессий?'):
+            data['token'] = token
+            update_data()
 
     session = VkSession(token)
-    try:
-        session.start()
-    except KeyboardInterrupt:
-        print()
-        sys.exit()
+    session.start()
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        print()
+        sys.exit()
