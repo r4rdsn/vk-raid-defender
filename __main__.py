@@ -13,7 +13,7 @@ import sys
 try:
     from vk_api import VkApi
 except ImportError:
-    sys.exit('для работы vk-raid-defender-необходима библиотека vk_api')
+    sys.exit('для работы vk-raid-defender необходима библиотека vk_api')
 
 from vk_api.longpoll import VkLongPoll, VkEventType
 
@@ -161,8 +161,8 @@ def authorize():
 
         token = token.group(1)
 
-        proxy = input('введи адрес прокси-сервера для при необходимости его использования: ')
-        while proxy and not re.match(r'(localhost|\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}):\d{4}', proxy):
+        proxy = input('введи адрес прокси-сервера при необходимости его использования: ')
+        while proxy and not re.match(r'(localhost|\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}):\d{1,5}', proxy):
             proxy = input('неверный формат адреса сервера, попробуй ещё раз: ')
 
         if proxy:
