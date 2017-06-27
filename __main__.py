@@ -13,7 +13,7 @@ import sys
 try:
     from vk_api import VkApi
 except ImportError:
-    sys.exit('для работы vk raid defender необходима библиотека vk_api')
+    sys.exit('для работы vk-raid-defender-необходима библиотека vk_api')
 
 from vk_api.longpoll import VkLongPoll, VkEventType
 
@@ -41,7 +41,7 @@ def update_data():
         pickle.dump(data, f)
 
 
-logger = logging.getLogger('vk raid defender')
+logger = logging.getLogger('vk-raid-defender')
 logger.setLevel(logging.INFO)
 terminal_logger = logging.StreamHandler()
 formatter = logging.Formatter("[%(asctime)s.%(msecs).03d] %(message)s", datefmt="%H:%M:%S")
@@ -145,10 +145,11 @@ class VkSession(VkApi):
         self.listen()
 
 
-def main():
-    print('для работы vk raid helper необходима авторизация')
+def authorize():
+    print('для работы vk-raid-defender необходима авторизация')
 
     token = data.get('token')
+    proxies = data.get('proxies')
 
     if token is None or not ask_yes_or_no('использовать ранее сохранённые данные для авторизации?'):
         print('\nhttps://oauth.vk.com/authorize?client_id=6020061&display=page&redirect_uri=https://oauth.vk.com/blank.html&scope=69632&response_type=token\n')
@@ -160,17 +161,40 @@ def main():
 
         token = token.group(1)
 
+        proxy = input('введи адрес прокси-сервера для при необходимости его использования: ')
+        while proxy and not re.match(r'(localhost|\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}):\d{4}', proxy):
+            proxy = input('неверный формат адреса сервера, попробуй ещё раз: ')
+
+        if proxy:
+            if ask_yes_or_no('использовать протокол socks5 вместо http?'):
+                proxies = {
+                    'http': f'socks5://{proxy}',
+                    'https': f'socks5://{proxy}'
+                }
+            else:
+                proxies = {
+                    'http': f'http://{proxy}',
+                    'https': f'https://{proxy}'
+                }
+        else:
+            proxies = None
+
         if ask_yes_or_no('сохранить введённые данные для следующих сессий?'):
             data['token'] = token
+            data['proxies'] = proxies
             update_data()
 
-    session = VkSession(token)
+    session = VkSession(token, proxies=proxies)
     session.start()
 
 
-if __name__ == "__main__":
+def main():
     try:
-        main()
+        authorize()
     except KeyboardInterrupt:
         print()
         sys.exit()
+
+
+if __name__ == "__main__":
+    main()
