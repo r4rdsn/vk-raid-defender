@@ -20,6 +20,8 @@ import webbrowser
 from time import time
 from getpass import getpass
 
+from vk_api.exceptions import ApiError
+
 
 class CLIDefender(VkRaidDefender):
     def run(self, chat_ids, objectives):
@@ -71,11 +73,19 @@ def run():
     proxies = data.get('proxies')
 
     if token is None or not ask_yes_or_no('использовать ранее сохранённые данные для авторизации?'):
-        webbrowser.open(OAUTH_URL, new=2)
+        use_webbrowser = ask_yes_or_no('открыть ссылку для авторизации в веб-браузере по умолчанию?')
+        print()
+
+        if use_webbrowser:
+            webbrowser.open(OAUTH_URL, new=2)
+            print('в веб-браузере только что была открыта ссылка для авторизации.')
+        else:
+            print(OAUTH_URL + '\n')
+            print('открой в веб-браузере страницу по ссылке выше.')
 
         token = None
         while token is None:
-            user_input = getpass('\nавторизируйся на открытой странице при необходимости и вставь адресную строку страницы, на которую было осуществлено перенаправление: ')
+            user_input = getpass('авторизируйся на открытой странице при необходимости и вставь адресную строку страницы, на которую было осуществлено перенаправление: ')
             token = re.search(r'(?:.*access_token=)?([a-f0-9]+).*', user_input)
 
         token = token.group(1)
@@ -117,7 +127,13 @@ def run():
             data['objectives'] = objectives
             update_data()
 
-    defender = CLIDefender(token, proxies=proxies)
+    try:
+        defender = CLIDefender(token, proxies=proxies)
+    except ApiError:
+        del data['token']
+        update_data()
+        sys.exit('введённый токен недействителен')
+
     defender.run(chat_ids, objectives)
 
 
