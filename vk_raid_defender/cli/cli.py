@@ -1,3 +1,4 @@
+from .. import __version__
 from ..defender import *
 
 ####################################################################################################
@@ -34,6 +35,9 @@ class CLIDefender(VkRaidDefender):
         try:
             self.listen()
 
+        except KeyboardInterrupt:
+            raise
+
         except Exception as e:
             start_screen()
             logger.critical('произошла критическая ошибка, перезапускаюсь', exc_info=True)
@@ -60,10 +64,10 @@ def ask_yes_or_no(question, true_answer='y', false_answer='n', default_answer=''
 
     if answer == true_answer:
         return True
-    if answer == false_answer:
+    elif answer == false_answer:
         return False
-
-    return default
+    else:
+        return default
 
 
 def run():
@@ -97,13 +101,13 @@ def run():
         if proxy:
             if ask_yes_or_no('использовать протокол socks5 вместо http?'):
                 proxies = {
-                    'http': f'socks5://{proxy}',
-                    'https': f'socks5://{proxy}'
+                    'http': 'socks5://' + proxy,
+                    'https': 'socks5://' + proxy
                 }
             else:
                 proxies = {
-                    'http': f'http://{proxy}',
-                    'https': f'https://{proxy}'
+                    'http': 'http://' + proxy,
+                    'https': 'https://' + proxy
                 }
         else:
             proxies = None

@@ -7,7 +7,7 @@ except ImportError:
 
 from vk_api.longpoll import VkLongPoll, VkEventType
 
-from .settings import DATA_FILE_NAME, OAUTH_URL
+from settings import DATA_FILE_NAME, OAUTH_URL
 from .logger import logger
 
 import pickle
@@ -29,8 +29,9 @@ def update_data():
 
 
 class VkRaidDefender(VkApi):
-    def __init__(self, token, *args, **kwargs):
+    def __init__(self, token, proxies=None, *args, **kwargs):
         super().__init__(*args, token=token, **kwargs)
+        self.http.proxies = proxies
         self.vk = self.get_api()
         self.polling = VkLongPoll(self)
         self._chat_ids = []
@@ -63,6 +64,6 @@ class VkRaidDefender(VkApi):
                     try:
                         self.vk.messages.addChatUser(chat_id=event.chat_id, user_id=user_victim)
                         defend_counter += 1
-                        logger.info(f'{user_victim} был возвращён в конфу "{event.subject}"')
+                        logger.info('{} был возвращён в конфу "{}"'.format(user_victim, event.subject))
                     except Exception as e:
-                        logger.error(f'не удалось вернуть {user_victim} в конфу "{event.subject}": "{e}"')
+                        logger.error('не удалось вернуть {} в конфу "{}": "{}"'.format(user_victim, event.subject, str(e)))
