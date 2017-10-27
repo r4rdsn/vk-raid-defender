@@ -7,7 +7,7 @@ except ImportError:
 
 from vk_api.longpoll import VkLongPoll, VkEventType
 
-from settings import DATA_FILE_NAME, OAUTH_URL
+from .settings import DATA_FILE_NAME, CLIENT_ID
 from .logger import logger
 
 import pickle

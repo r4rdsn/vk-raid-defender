@@ -1,5 +1,5 @@
 from .. import __version__
-from ..defender import *
+from ..defender import VkRaidDefender, data, update_data
 
 ####################################################################################################
 LOGO = '''\
@@ -22,6 +22,7 @@ from time import time
 from getpass import getpass
 
 from vk_api.exceptions import ApiError
+from requests.exceptions import InvalidSchema
 
 
 class CLIDefender(VkRaidDefender):
@@ -80,11 +81,13 @@ def run():
         use_webbrowser = ask_yes_or_no('открыть ссылку для авторизации в веб-браузере по умолчанию?')
         print()
 
+        oauth_url = 'https://oauth.vk.com/authorize?client_id={}&display=page&redirect_uri=https://oauth.vk.com/blank.html&scope=69632&response_type=token'.format(CLIENT_ID)
+
         if use_webbrowser:
-            webbrowser.open(OAUTH_URL, new=2)
+            webbrowser.open(oauth_url, new=2)
             print('в веб-браузере только что была открыта ссылка для авторизации.')
         else:
-            print(OAUTH_URL + '\n')
+            print(oauth_url + '\n')
             print('открой в веб-браузере страницу по ссылке выше.')
 
         token = None
@@ -133,6 +136,8 @@ def run():
 
     try:
         defender = CLIDefender(token, proxies=proxies)
+    except InvalidSchema:
+        sys.exit('необходимо установить дополнительные зависимости для поддержки протокола socks5')
     except ApiError:
         del data['token']
         update_data()

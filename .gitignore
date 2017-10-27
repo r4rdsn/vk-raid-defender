@@ -33,3 +33,6 @@ wheels/
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
+
+# Data file
+vk_raid_helper.dat

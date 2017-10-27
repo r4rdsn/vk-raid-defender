@@ -10,10 +10,10 @@ with open(join(abspath(dirname(__file__)), 'README.md')) as file:
 setup(
     name='vk-raid-defender',
     version=__version__,
-    description='',
+    description='чат-бот для вк, который может быть использован для добавления пользователей в беседы в случае их исключения оттуда',
     long_description=long_description,
     url='https://github.com/r4rdsn/vk-raid-defender',
-    author='alfred richardsn',
+    author=__author__,
     author_email='rchrdsn@protonmail.ch',
     license='MIT',
     keywords='vk bot',
@@ -24,8 +24,9 @@ setup(
         'Programming Language :: Python :: 3.6',
     ],
     packages=find_packages(),
-    install_requires=['vk_api==9.0', 'requests[socks]'],
-    python_requires='~=3.6.*',
+    install_requires=['vk_api'],
+    extras_require={'socks': ['PySocks']},
+    python_requires='==3.6.*',
     entry_points={
         'console_scripts': [
             'vk-raid-defender=vk_raid_defender.cli.cli:main',
