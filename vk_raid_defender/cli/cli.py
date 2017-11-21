@@ -13,6 +13,7 @@ by alfred richardsn'''
 ####################################################################################################
 
 from ..logger import logger
+from ..settings import CLIENT_ID
 
 import re
 import os
