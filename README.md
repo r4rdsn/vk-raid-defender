@@ -5,19 +5,20 @@
 * установи [python](https://www.python.org/downloads) версии не менее 3.6.0
 * клонируй этот репозиторий:  
 ```$ git clone https://github.com/r4rdsn/vk-raid-defender.git```
+* перейди в директорию локального репозитория:  
+```$ cd vk-raid-defender```
 * установи *vk-raid-defender* через скрипт установки:  
-```# python vk-raid-defender/setup.py install```
+```# python setup.py install```
 * запусти программу:  
 ```$ vk-raid-defender```
 
 # инструкция по установке и запуску на windows
 * установи [python](https://www.python.org/downloads) версии не менее 3.6.0 (чекбокс "*Add Python to PATH*" при этом должен быть активирован)
 * скачай [архив с этим репозиторием](https://github.com/r4rdsn/vk-raid-defender/archive/master.zip)
-* в командной строке перейди в директорию со скачанным архивом:  
+* распакуй архив и в командной строке перейди в директорию распакованного архива:  
 ```> cd <директория>```
-* распакуй архив в папку *vk-raid-defender*
 * установи *vk-raid-defender* через скрипт установки:  
-```> python vk-raid-defender/setup.py install```
+```> python setup.py install```
 * запусти программу:  
 ```> python -m vk_raid_defender```
 
