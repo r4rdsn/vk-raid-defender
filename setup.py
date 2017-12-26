@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-from vk_raid_defender import __author__, __version__
+from vk_raid_defender import __author__, __version__, __description__
 from os.path import abspath, dirname, join
 
 with open(join(abspath(dirname(__file__)), 'README.md')) as file:
@@ -10,7 +10,7 @@ with open(join(abspath(dirname(__file__)), 'README.md')) as file:
 setup(
     name='vk-raid-defender',
     version=__version__,
-    description='чат-бот для вк, который может быть использован для добавления пользователей в беседы в случае их исключения оттуда',
+    description=__description__,
     long_description=long_description,
     url='https://github.com/r4rdsn/vk-raid-defender',
     author=__author__,
