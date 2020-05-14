@@ -1,4 +1,4 @@
-from .. import __version__, __description__
+from .. import __description__
 from ..defender import VkRaidDefender, data, update_data
 
 ####################################################################################################
@@ -19,7 +19,6 @@ import re
 import os
 import sys
 import webbrowser
-from time import time
 from getpass import getpass
 from argparse import ArgumentParser
 

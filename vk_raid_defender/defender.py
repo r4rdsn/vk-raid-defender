@@ -7,7 +7,7 @@ except ImportError:
 
 from vk_api.longpoll import VkLongPoll, VkEventType
 
-from .settings import DATA_FILE_NAME, CLIENT_ID
+from .settings import DATA_FILE_NAME
 from .logger import logger
 
 import pickle
@@ -48,7 +48,7 @@ class VkRaidDefender(VkApi):
                     event.to_me):
                 continue
 
-            event_dict = event.raw[7]
+            event_dict = event.raw[6]
 
             if event_dict.get('source_act') == 'chat_kick_user' and event_dict['source_mid'] != event_dict['from']:
                 user_victim = int(event_dict['source_mid'])
@@ -64,6 +64,6 @@ class VkRaidDefender(VkApi):
                     try:
                         self.vk.messages.addChatUser(chat_id=event.chat_id, user_id=user_victim)
                         defend_counter += 1
-                        logger.info('{} был возвращён в конфу "{}"'.format(user_victim, event.subject))
+                        logger.info('{} был возвращён в конфу {}'.format(user_victim, event.chat_id))
                     except Exception as e:
-                        logger.error('не удалось вернуть {} в конфу "{}": "{}"'.format(user_victim, event.subject, str(e)))
+                        logger.error('не удалось вернуть {} в конфу {}: "{}"'.format(user_victim, event.chat_id, str(e)))
